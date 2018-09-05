@@ -7,13 +7,11 @@ import org.powerbot.script.rt4.ClientContext;
 import org.powerbot.script.rt4.Npc;
 import org.powerbot.script.rt4.Prayer.Effect;
 
+import com.landone.rsbot.constants.ITEMS;
+import com.landone.rsbot.constants.OBJECTS;
 import com.landone.rsbot.constants.PATHS;
-import com.landone.rsbot.tasks.BankTask;
-import com.landone.rsbot.tasks.BronzeMineTask;
-import com.landone.rsbot.tasks.CowAttackTask;
-import com.landone.rsbot.tasks.SmeltTask;
-import com.landone.rsbot.tasks.Task;
-import com.landone.rsbot.tasks.WalkTask;
+import com.landone.rsbot.recipes.Recipe;
+import com.landone.rsbot.tasks.*;
 
 @Script.Manifest(name = "BotTest", description="Testing bot stuff")
 public class BotMain extends PollingScript<ClientContext> {
@@ -22,11 +20,16 @@ public class BotMain extends PollingScript<ClientContext> {
 	private int currentTask = 0;
 	private long nextRandom = 0;
 	
+	private Recipe bronzeMining = new Recipe();
+	
 	@Override
 	public void start() {
 		
+		bronzeMining.addIngredient(OBJECTS.COPPER_ORE, 1, ITEMS.COPPER_ORE);
+		bronzeMining.addIngredient(OBJECTS.TIN_ORE, 1, ITEMS.TIN_ORE);
+		
 		ctx.camera.pitch(true);
-		/*tasks.add(new BronzeMineTask(ctx));
+		tasks.add(new MineTask(ctx, bronzeMining));
 		tasks.add(new WalkTask(ctx, PATHS.LumbCenter_LumbMine, false));
 		tasks.add(new WalkTask(ctx, PATHS.LumbCenter_LumbFurnace, true));
 		tasks.add(new SmeltTask(ctx));
@@ -34,8 +37,8 @@ public class BotMain extends PollingScript<ClientContext> {
 		tasks.add(new WalkTask(ctx, PATHS.LumbCenter_LumbBank, true));
 		tasks.add(new BankTask(ctx));
 		tasks.add(new WalkTask(ctx, PATHS.LumbCenter_LumbBank, false));
-		tasks.add(new WalkTask(ctx, PATHS.LumbCenter_LumbMine, true));*/
-		tasks.add(new CowAttackTask(ctx));
+		tasks.add(new WalkTask(ctx, PATHS.LumbCenter_LumbMine, true));
+		//tasks.add(new CowAttackTask(ctx));
 		
 	}
 

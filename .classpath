@@ -2,7 +2,7 @@
 <classpath>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="C:/Users/animo/Desktop/RSBot/jagexappletviewer.jar"/>
-	<classpathentry kind="lib" path="C:/Users/animo/Desktop/RSBot/RSBot.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Landon/eclipse-workspace/RSBot/RSBot.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Landon/eclipse-workspace/RSBot/jagexappletviewer.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

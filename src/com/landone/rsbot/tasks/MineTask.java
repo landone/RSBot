@@ -5,24 +5,46 @@ import org.powerbot.script.rt4.Item;
 
 import com.landone.rsbot.constants.ANIMATIONS;
 import com.landone.rsbot.constants.ITEMS;
-import com.landone.rsbot.constants.OBJECTS;
+import com.landone.rsbot.recipes.Recipe;
 
-public class BronzeMineTask extends Task {
-
-	public BronzeMineTask(ClientContext ctx) {
-		super(ctx);
-	}
+public class MineTask extends Task {
 	
 	//Empty inv spaces
 	private int empty;
-	//Copper inv spaces
-	private int copper;
-	//Tin inv spaces
-	private int tin;
 	//Total inv spaces allocated for mining
 	private int total;
 	//Tile of last rock
 	private GameObject lastRock = null;
+	//Recipe of what we want to mine
+	private Recipe recipe;
+	//Index of ore being mined
+	private int oreIndex;
+
+	public MineTask(ClientContext ctx, Recipe recipe) {
+		
+		super(ctx);
+		this.recipe = recipe;
+		oreIndex = 0;
+		
+	}
+	
+	private void updateTotal() {
+		
+		empty = 28 - ctx.inventory.select().count();
+		total = empty;
+		for(int i=0;i<recipe.getIngredSize();i++) {
+			total += getIngredInvCount(i);
+		}
+		total -= total % recipe.getSize();
+		
+	}
+	
+	private int getIngredInvCount(int index) {
+		
+		int id = recipe.getIngredItemID(index);
+		return ctx.inventory.select().id(id).count();
+		
+	}
 
 	@Override
 	public boolean activate() {
@@ -31,13 +53,9 @@ public class BronzeMineTask extends Task {
 			i.interact("Drop");
 		}
 		
-		empty = 28 - ctx.inventory.select().count();
-		copper = ctx.inventory.select().id(ITEMS.COPPER_ORE).count();
-		tin = ctx.inventory.select().id(ITEMS.TIN_ORE).count();
-		total = empty + copper + tin;
-		total -= total % 2;//Assert 
+		updateTotal();
 		
-		return empty > 0 && !(empty < 2 && copper == tin);
+		return empty > 0 && !(empty < recipe.getSize() && (total - empty) % recipe.getSize() == 0);
 		
 	}
 
@@ -51,7 +69,8 @@ public class BronzeMineTask extends Task {
 			}
 		}
 		
-		int[] target = copper < total / 2 ? OBJECTS.COPPER_ORE : OBJECTS.TIN_ORE;
+		int[] target = getIngredInvCount(oreIndex) < (total / recipe.getSize())*recipe.getIngredAmount(oreIndex) ? 
+				recipe.getIngredIDs(oreIndex) : recipe.getIngredIDs(++oreIndex);
 		
 		GameObject rock = ctx.objects.select().id(target).nearest().poll();
 		
@@ -75,6 +94,7 @@ public class BronzeMineTask extends Task {
 	public void reset() {
 		
 		lastRock = null;
+		oreIndex = 0;
 		
 	}
 
